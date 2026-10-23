@@ -41,7 +41,7 @@ export function Header({
       <div className="header-side">
         {onBack && (
           <button type="button" className="link back" onClick={onBack}>
-            ‹ 뒤로
+            ‹ Back
           </button>
         )}
       </div>

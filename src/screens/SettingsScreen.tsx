@@ -47,19 +47,19 @@ export function SettingsScreen({
       const ids = new Set(words.map((w) => w.id));
       const added = incoming.filter((w) => !seen.has(`${w.list}|${normalizeGreek(w.greek)}`) && !ids.has(w.id));
       onChangeWords([...words, ...added]);
-      alert(`${added.length}개 단어를 불러왔어요. (중복 ${incoming.length - added.length}개 제외)`);
+      alert(`Imported ${added.length} words (${incoming.length - added.length} duplicates skipped).`);
     } catch {
-      alert('백업 파일을 읽을 수 없어요.');
+      alert("Couldn't read the backup file.");
     }
   };
 
   return (
     <div className="screen">
-      <Header title="설정" onBack={onBack} />
+      <Header title="Settings" onBack={onBack} />
       <div className="page">
-        <h2 className="section">Gemini (사진 읽기)</h2>
+        <h2 className="section">Gemini (photo reading)</h2>
         <div className="card">
-          <label className="label">API 키</label>
+          <label className="label">API key</label>
           <input
             className="field"
             type="password"
@@ -72,50 +72,50 @@ export function SettingsScreen({
             <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">
               Google AI Studio
             </a>
-            에서 무료로 만들 수 있어요. 키는 이 폰에만 저장되고 Google 말고는 어디에도 보내지 않아요.
+             — create one for free. The key is stored only on this device and is sent only to Google.
           </p>
-          <label className="label">모델</label>
+          <label className="label">Model</label>
           <input className="field" value={model} onChange={(e) => setModel(e.target.value)} />
-          <p className="muted small">기본값: {DEFAULT_SETTINGS.geminiModel}</p>
+          <p className="muted small">Default: {DEFAULT_SETTINGS.geminiModel}</p>
           <button className="btn primary mt" onClick={save}>
-            {saved ? '저장됨 ✓' : '저장'}
+            {saved ? 'Saved ✓' : 'Save'}
           </button>
         </div>
 
-        <h2 className="section">백업</h2>
+        <h2 className="section">Backup</h2>
         <div className="card stack">
           <p className="muted small">
-            단어는 이 폰의 브라우저에 저장돼요. 폰을 바꾸거나 데이터를 지우기 전에 백업 파일로 내보내 두세요.
+            Words are stored in this device's browser. Export a backup before switching phones or clearing browser data.
           </p>
           <button className="btn secondary" onClick={exportWords} disabled={words.length === 0}>
-            ⬇️ 단어 내보내기 ({words.length}개)
+            ⬇️ Export words ({words.length})
           </button>
           <input ref={fileInput} type="file" accept="application/json,.json" hidden onChange={importWords} />
           <button className="btn secondary" onClick={() => fileInput.current?.click()}>
-            ⬆️ 백업 파일 불러오기
+            ⬆️ Import backup file
           </button>
         </div>
 
-        <h2 className="section">학습 기록</h2>
+        <h2 className="section">Progress</h2>
         <div className="card stack">
           <button
             className="btn secondary"
             disabled={words.length === 0}
             onClick={() => {
-              if (confirm('모든 단어의 "알아요/몰라요" 기록을 초기화할까요?'))
+              if (confirm('Reset "Know it / Don\'t know" progress for all words?'))
                 onChangeWords(words.map((w) => ({ ...w, box: 0 })));
             }}
           >
-            학습 기록 초기화
+            Reset progress
           </button>
           <button
             className="btn danger"
             disabled={words.length === 0}
             onClick={() => {
-              if (confirm(`단어 ${words.length}개를 전부 삭제할까요? 되돌릴 수 없어요.`)) onChangeWords([]);
+              if (confirm(`Delete all ${words.length} words? This can't be undone.`)) onChangeWords([]);
             }}
           >
-            모든 단어 삭제
+            Delete all words
           </button>
         </div>
       </div>

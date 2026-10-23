@@ -40,19 +40,19 @@ export function HomeScreen({
   return (
     <div className="page">
       <div className="brand">Ἑλληνικά</div>
-      <p className="muted">그리스어 플래시카드 · 단어 {words.length}개</p>
+      <p className="muted">Greek Flashcards · {words.length} {words.length === 1 ? 'word' : 'words'}</p>
 
       {words.length === 0 ? (
         <div className="card empty">
-          아직 단어가 없어요.
+          No words yet.
           <br />
-          단어장 사진을 올려서 시작해 보세요!
+          Add a photo of a vocabulary list to get started!
         </div>
       ) : (
         <>
-          <h2 className="section">단어장 리스트</h2>
+          <h2 className="section">Lists</h2>
           <div className="chips">
-            <Chip label="전체" selected={activeLists.length === 0} onClick={() => set({ lists: [] })} />
+            <Chip label="All" selected={activeLists.length === 0} onClick={() => set({ lists: [] })} />
             {lists.map((l) => (
               <Chip
                 key={l}
@@ -63,9 +63,9 @@ export function HomeScreen({
             ))}
           </div>
 
-          <h2 className="section">품사</h2>
+          <h2 className="section">Part of speech</h2>
           <div className="chips">
-            <Chip label="전체" selected={activePos.length === 0} onClick={() => set({ pos: [] })} />
+            <Chip label="All" selected={activePos.length === 0} onClick={() => set({ pos: [] })} />
             {posInUse.map((p) => (
               <Chip
                 key={p}
@@ -77,34 +77,34 @@ export function HomeScreen({
             ))}
           </div>
 
-          <h2 className="section">옵션</h2>
+          <h2 className="section">Options</h2>
           <div className="chips">
-            <Chip label="그리스어 → 영어" selected={!options.reverse} onClick={() => set({ reverse: false })} />
-            <Chip label="영어 → 그리스어" selected={options.reverse} onClick={() => set({ reverse: true })} />
+            <Chip label="Greek → English" selected={!options.reverse} onClick={() => set({ reverse: false })} />
+            <Chip label="English → Greek" selected={options.reverse} onClick={() => set({ reverse: true })} />
           </div>
           <div className="chips">
             <Chip
-              label="🔀 섞기 (모르는 단어 먼저)"
+              label="🔀 Shuffle (weak words first)"
               selected={options.shuffle}
               onClick={() => set({ shuffle: !options.shuffle })}
             />
           </div>
 
           <button className="btn primary mt" disabled={matching.length === 0} onClick={onStart}>
-            {matching.length > 0 ? `공부 시작 (${matching.length}장)` : '해당하는 단어가 없어요'}
+            {matching.length > 0 ? `Start (${matching.length} ${matching.length === 1 ? 'card' : 'cards'})` : 'No matching words'}
           </button>
         </>
       )}
 
       <div className="stack mt-lg">
         <button className={`btn ${words.length ? 'secondary' : 'primary'}`} onClick={onImport}>
-          📷 사진으로 단어 추가
+          📷 Add Words from Photo
         </button>
         <button className="btn secondary" onClick={onManage}>
-          📚 단어 관리
+          📚 Manage Words
         </button>
         <button className="btn secondary" onClick={onSettings}>
-          ⚙️ 설정
+          ⚙️ Settings
         </button>
       </div>
     </div>

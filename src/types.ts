@@ -20,14 +20,14 @@ export const POS_LIST: Pos[] = [
 ];
 
 export const POS_LABEL: Record<Pos, string> = {
-  noun: '명사',
-  verb: '동사',
-  adjective: '형용사',
-  adverb: '부사',
-  pronoun: '대명사',
-  preposition: '전치사',
-  conjunction: '접속사',
-  other: '기타',
+  noun: 'Noun',
+  verb: 'Verb',
+  adjective: 'Adjective',
+  adverb: 'Adverb',
+  pronoun: 'Pronoun',
+  preposition: 'Preposition',
+  conjunction: 'Conjunction',
+  other: 'Other',
 };
 
 export const POS_COLOR: Record<Pos, string> = {

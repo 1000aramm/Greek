@@ -17,7 +17,7 @@ function write(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    alert('저장 공간이 부족해서 저장하지 못했어요.');
+    alert('Not enough storage space to save.');
   }
 }
 

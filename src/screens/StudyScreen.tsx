@@ -57,24 +57,24 @@ export function StudyScreen({
     const missedIds = [...missed].filter((id) => byId.has(id));
     return (
       <div className="screen">
-        <Header title="결과" onBack={onExit} />
+        <Header title="Results" onBack={onExit} />
         <div className="page center">
           <div className="done-emoji">🎉</div>
-          <h2 className="done-title">다 끝났어요!</h2>
+          <h2 className="done-title">All done!</h2>
           <p className="muted">
-            {total}개 중 한 번에 맞힌 단어: {total - missedIds.length}개
+            Got {total - missedIds.length} of {total} on the first try
           </p>
           <div className="stack mt-lg">
             {missedIds.length > 0 && (
               <button className="btn primary" onClick={() => restart(missedIds)}>
-                틀린 단어만 다시 ({missedIds.length})
+                Review missed words ({missedIds.length})
               </button>
             )}
             <button className="btn secondary" onClick={() => restart(buildDeck(words, options))}>
-              처음부터 다시
+              Start over
             </button>
             <button className="btn secondary" onClick={onExit}>
-              홈으로
+              Home
             </button>
           </div>
         </div>
@@ -117,15 +117,15 @@ export function StudyScreen({
           {flipped ? (
             <>
               <button className="btn danger grow" onClick={() => grade(false)}>
-                😕 몰라요
+                😕 Don't know
               </button>
               <button className="btn success grow" onClick={() => grade(true)}>
-                😊 알아요
+                😊 Know it
               </button>
             </>
           ) : (
             <button className="btn secondary grow" onClick={() => setFlipped(true)}>
-              뒤집기
+              Flip
             </button>
           )}
         </div>

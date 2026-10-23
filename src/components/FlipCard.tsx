@@ -25,7 +25,7 @@ export function FlipCard({
             </span>
           )}
           <div className={`face-text ${reverse ? '' : 'greek'}`}>{front}</div>
-          <div className="hint">탭해서 뒤집기</div>
+          <div className="hint">Tap to flip</div>
         </div>
         <div className="face back">
           <div className={`face-text ${reverse ? 'greek' : ''}`}>{back}</div>

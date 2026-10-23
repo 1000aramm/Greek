@@ -45,7 +45,7 @@ export function WordsScreen({
   };
 
   const remove = (id: string) => {
-    if (confirm('이 단어를 삭제할까요?')) {
+    if (confirm('Delete this word?')) {
       onChange(words.filter((w) => w.id !== id));
       setDraft(null);
     }
@@ -53,7 +53,7 @@ export function WordsScreen({
 
   const removeList = (l: number) => {
     const n = words.filter((w) => w.list === l).length;
-    if (confirm(`List ${l}의 단어 ${n}개를 모두 삭제할까요?`)) {
+    if (confirm(`Delete all ${n} words in List ${l}?`)) {
       onChange(words.filter((w) => w.list !== l));
       setListFilter(null);
     }
@@ -62,7 +62,7 @@ export function WordsScreen({
   return (
     <div className="screen">
       <Header
-        title="단어 관리"
+        title="Manage Words"
         onBack={onBack}
         right={
           <button
@@ -71,35 +71,35 @@ export function WordsScreen({
               setDraft({ id: newId(), greek: '', english: '', pos: posFilter ?? 'noun', list: listFilter ?? lists[0] ?? 1, isNew: true })
             }
           >
-            + 추가
+            + Add
           </button>
         }
       />
       <div className="page">
-        <input className="search" placeholder="검색 (그리스어 또는 영어)" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <input className="search" placeholder="Search Greek or English" value={query} onChange={(e) => setQuery(e.target.value)} />
         <div className="chips mt">
-          <Chip label="모든 리스트" selected={listFilter === null} onClick={() => setListFilter(null)} />
+          <Chip label="All lists" selected={listFilter === null} onClick={() => setListFilter(null)} />
           {lists.map((l) => (
             <Chip key={l} label={`List ${l}`} selected={listFilter === l} onClick={() => setListFilter(l)} />
           ))}
         </div>
         <div className="chips">
-          <Chip label="모든 품사" selected={posFilter === null} onClick={() => setPosFilter(null)} />
+          <Chip label="All parts of speech" selected={posFilter === null} onClick={() => setPosFilter(null)} />
           {POS_LIST.filter((p) => words.some((w) => w.pos === p)).map((p) => (
             <Chip key={p} label={POS_LABEL[p]} color={POS_COLOR[p]} selected={posFilter === p} onClick={() => setPosFilter(p)} />
           ))}
         </div>
 
         <div className="row between">
-          <span className="muted small">{shown.length}개</span>
+          <span className="muted small">{shown.length} {shown.length === 1 ? 'word' : 'words'}</span>
           {listFilter !== null && (
             <button className="link danger-text small" onClick={() => removeList(listFilter)}>
-              List {listFilter} 전체 삭제
+              Delete List {listFilter}
             </button>
           )}
         </div>
 
-        {shown.length === 0 && <p className="muted help">단어가 없어요.</p>}
+        {shown.length === 0 && <p className="muted help">No words.</p>}
         {shown.map((w) => (
           <button key={w.id} className="word-row as-button" onClick={() => setDraft({ ...w, isNew: false })}>
             <div className="grow left">
@@ -119,18 +119,18 @@ export function WordsScreen({
       {draft && (
         <div className="modal-backdrop" onClick={() => setDraft(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>{draft.isNew ? '단어 추가' : '단어 수정'}</h2>
-            <label className="label">그리스어</label>
+            <h2>{draft.isNew ? 'Add Word' : 'Edit Word'}</h2>
+            <label className="label">Greek</label>
             <input className="field greek" value={draft.greek} onChange={(e) => setDraft({ ...draft, greek: e.target.value })} autoFocus />
-            <label className="label">영어 뜻</label>
+            <label className="label">English meaning</label>
             <input className="field" value={draft.english} onChange={(e) => setDraft({ ...draft, english: e.target.value })} />
-            <label className="label">품사</label>
+            <label className="label">Part of speech</label>
             <div className="chips">
               {POS_LIST.map((p) => (
                 <Chip key={p} label={POS_LABEL[p]} color={POS_COLOR[p]} selected={draft.pos === p} onClick={() => setDraft({ ...draft, pos: p })} />
               ))}
             </div>
-            <label className="label">리스트 번호</label>
+            <label className="label">List number</label>
             <input
               className="field"
               type="number"
@@ -142,14 +142,14 @@ export function WordsScreen({
             <div className="row gap mt">
               {!draft.isNew && (
                 <button className="btn danger" onClick={() => remove(draft.id)}>
-                  삭제
+                  Delete
                 </button>
               )}
               <button className="btn secondary grow" onClick={() => setDraft(null)}>
-                취소
+                Cancel
               </button>
               <button className="btn primary grow" disabled={!draft.greek.trim() || !draft.english.trim()} onClick={saveDraft}>
-                저장
+                Save
               </button>
             </div>
           </div>

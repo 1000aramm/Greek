@@ -1,8 +1,8 @@
 {
   "name": "Greek Flashcards",
   "short_name": "Greek",
-  "description": "그리스어-영어 플래시카드",
-  "lang": "ko",
+  "description": "Greek–English flashcards",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

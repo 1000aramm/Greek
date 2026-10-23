@@ -43,7 +43,7 @@ export function ImportScreen({
 
   const choose = (input: HTMLInputElement | null) => {
     if (!settings.geminiApiKey) {
-      if (confirm('Gemini API 키가 필요해요. 설정으로 갈까요?')) onOpenSettings();
+      if (confirm('A Gemini API key is needed. Open Settings?')) onOpenSettings();
       return;
     }
     input?.click();
@@ -58,7 +58,7 @@ export function ImportScreen({
     const found: Row[] = [];
     try {
       for (let i = 0; i < files.length; i++) {
-        setLoading(files.length > 1 ? `사진 ${i + 1}/${files.length} 읽는 중...` : 'Gemini가 사진을 읽는 중...');
+        setLoading(files.length > 1 ? `Reading photo ${i + 1}/${files.length}...` : 'Gemini is reading the photo...');
         const base64 = await imageToBase64(files[i]);
         const extracted = await extractWordsFromImage(
           settings.geminiApiKey,
@@ -68,7 +68,7 @@ export function ImportScreen({
         );
         for (const w of extracted) found.push({ key: newId(), ...w, checked: true });
       }
-      if (found.length === 0) setError('단어를 찾지 못했어요. 다른 사진으로 시도해 보세요.');
+      if (found.length === 0) setError('No words found. Try another photo.');
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -101,16 +101,16 @@ export function ImportScreen({
 
   return (
     <div className="screen">
-      <Header title="사진으로 단어 추가" onBack={onBack} />
+      <Header title="Add from Photo" onBack={onBack} />
       <div className={`page ${rows.length ? 'has-footer' : ''}`}>
         <input ref={cameraInput} type="file" accept="image/*" capture="environment" hidden onChange={onFiles} />
         <input ref={albumInput} type="file" accept="image/*" multiple hidden onChange={onFiles} />
         <div className="row gap">
           <button className="btn primary grow" disabled={!!loading} onClick={() => choose(cameraInput.current)}>
-            📷 사진 찍기
+            📷 Take Photo
           </button>
           <button className="btn primary grow" disabled={!!loading} onClick={() => choose(albumInput.current)}>
-            🖼 앨범에서
+            🖼 From Library
           </button>
         </div>
 
@@ -123,20 +123,20 @@ export function ImportScreen({
 
         {rows.length === 0 && !loading && (
           <p className="muted help">
-            단어장 사진을 찍거나 앨범에서 고르면 Gemini가 그리스어와 영어 뜻을 읽어서 아래에 쭉 보여줘요. 체크하고,
-            틀린 건 고치고, 저장하면 끝! 사진은 여러 장 한꺼번에 골라도 돼요.
+            Take or choose a photo of a vocabulary list and Gemini will read the Greek words and English meanings
+            into a list below. Check the ones you want, fix any mistakes, and save. You can pick several photos at once.
           </p>
         )}
 
         {rows.length > 0 && (
           <>
-            <h2 className="section">어느 리스트에 넣을까요?</h2>
+            <h2 className="section">Which list?</h2>
             <div className="chips">
               {allLists.map((l) => (
                 <Chip key={l} label={`List ${l}`} selected={list === l} onClick={() => setList(l)} />
               ))}
               <Chip
-                label="+ 새 리스트"
+                label="+ New list"
                 selected={false}
                 onClick={() => {
                   const next = Math.max(...allLists) + 1;
@@ -146,7 +146,7 @@ export function ImportScreen({
               />
             </div>
 
-            <h2 className="section">체크한 단어 품사 한꺼번에 정하기</h2>
+            <h2 className="section">Set part of speech for checked words</h2>
             <div className="chips">
               {POS_LIST.map((p) => (
                 <Chip
@@ -161,20 +161,20 @@ export function ImportScreen({
 
             <div className="row between mt">
               <strong>
-                {rows.length}개 찾음 · {checked.length}개 선택
+                {rows.length} found · {checked.length} selected
               </strong>
               <button className="link" onClick={() => setRows((rs) => rs.map((r) => ({ ...r, checked: !allChecked })))}>
-                {allChecked ? '모두 해제' : '모두 선택'}
+                {allChecked ? 'Deselect all' : 'Select all'}
               </button>
             </div>
-            <p className="muted small">품사 태그를 누르면 하나씩 바꿀 수 있어요.</p>
+            <p className="muted small">Tap a tag to change one word’s part of speech.</p>
 
             {rows.map((r) => (
               <div key={r.key} className={`word-row ${r.checked ? '' : 'off'}`}>
                 <button
                   className={`checkbox ${r.checked ? 'on' : ''}`}
                   onClick={() => update(r.key, { checked: !r.checked })}
-                  aria-label="선택"
+                  aria-label="Select"
                 >
                   {r.checked && '✓'}
                 </button>
@@ -182,7 +182,7 @@ export function ImportScreen({
                   <input
                     className="input-greek"
                     value={r.greek}
-                    placeholder="그리스어"
+                    placeholder="Greek"
                     onChange={(e) => update(r.key, { greek: e.target.value })}
                   />
                   <input
@@ -192,7 +192,7 @@ export function ImportScreen({
                     onChange={(e) => update(r.key, { english: e.target.value })}
                   />
                   {existingInList.has(normalizeGreek(r.greek)) && (
-                    <div className="dup">⚠️ List {list}에 이미 있는 단어예요</div>
+                    <div className="dup">⚠️ Already in List {list}</div>
                   )}
                 </div>
                 <button
@@ -211,7 +211,7 @@ export function ImportScreen({
       {rows.length > 0 && (
         <div className="footer">
           <button className="btn primary" disabled={checked.length === 0} onClick={save}>
-            List {list}에 {checked.length}개 저장
+            Save {checked.length} to List {list}
           </button>
         </div>
       )}

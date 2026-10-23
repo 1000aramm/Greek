@@ -6,7 +6,7 @@ export interface ExtractedWord {
   pos: Pos;
 }
 
-const PROMPT = `This image is a Greek vocabulary list (Greek words with English meanings).
+const PROMPT = `This image is a Biblical (New Testament / Koine) Greek vocabulary list with English meanings.
 Extract every vocabulary entry in the order it appears.
 
 Rules:
@@ -64,7 +64,7 @@ export async function extractWordsFromImage(
   const body = await res.json().catch(() => null);
   if (!res.ok) {
     const message = body?.error?.message ?? `HTTP ${res.status}`;
-    throw new Error(`Gemini 오류: ${message}`);
+    throw new Error(`Gemini error: ${message}`);
   }
 
   const parts: { text?: string; thought?: boolean }[] =
@@ -75,14 +75,14 @@ export async function extractWordsFromImage(
     .join('');
   if (!text) {
     const reason = body?.candidates?.[0]?.finishReason ?? body?.promptFeedback?.blockReason;
-    throw new Error(`Gemini가 단어를 돌려주지 않았어요${reason ? ` (${reason})` : ''}.`);
+    throw new Error(`Gemini returned no words${reason ? ` (${reason})` : ''}.`);
   }
 
   let data: unknown;
   try {
     data = JSON.parse(text);
   } catch {
-    throw new Error('Gemini 응답을 읽을 수 없어요. 다시 시도해 주세요.');
+    throw new Error("Couldn't read Gemini's response. Please try again.");
   }
   if (!Array.isArray(data)) return [];
 
