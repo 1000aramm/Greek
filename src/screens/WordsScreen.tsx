@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import { Chip, Header } from '../components/ui';
 import { normalizeGreek } from '../storage';
+import { WordFields } from '../cloud';
 import { newId, Pos, POS_COLOR, POS_LABEL, POS_LIST, Word } from '../types';
 
 type Draft = Omit<Word, 'box' | 'createdAt'> & { isNew: boolean };
 
 export function WordsScreen({
   words,
-  onChange,
+  onAdd,
+  onUpdate,
+  onDelete,
   onBack,
 }: {
   words: Word[];
-  onChange: (words: Word[]) => void;
+  onAdd: (word: Word) => void;
+  onUpdate: (id: string, fields: WordFields) => void;
+  onDelete: (ids: string[]) => void;
   onBack: () => void;
 }) {
   const lists = [...new Set(words.map((w) => w.list))].sort((a, b) => a - b);
@@ -30,31 +35,28 @@ export function WordsScreen({
 
   const saveDraft = () => {
     if (!draft || !draft.greek.trim() || !draft.english.trim()) return;
-    const fields = {
+    const fields: WordFields = {
       greek: draft.greek.trim(),
       english: draft.english.trim(),
       pos: draft.pos,
       list: Math.max(1, Math.floor(draft.list) || 1),
     };
-    onChange(
-      draft.isNew
-        ? [...words, { id: draft.id, ...fields, box: 0, createdAt: Date.now() }]
-        : words.map((w) => (w.id === draft.id ? { ...w, ...fields } : w)),
-    );
+    if (draft.isNew) onAdd({ id: draft.id, ...fields, box: 0, createdAt: Date.now() });
+    else onUpdate(draft.id, fields);
     setDraft(null);
   };
 
   const remove = (id: string) => {
     if (confirm('Delete this word?')) {
-      onChange(words.filter((w) => w.id !== id));
+      onDelete([id]);
       setDraft(null);
     }
   };
 
   const removeList = (l: number) => {
-    const n = words.filter((w) => w.list === l).length;
-    if (confirm(`Delete all ${n} words in List ${l}?`)) {
-      onChange(words.filter((w) => w.list !== l));
+    const ids = words.filter((w) => w.list === l).map((w) => w.id);
+    if (confirm(`Delete all ${ids.length} words in List ${l}?`)) {
+      onDelete(ids);
       setListFilter(null);
     }
   };

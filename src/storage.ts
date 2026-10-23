@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS, isPos, newId, Settings, StudyOptions, Word } from './
 const WORDS_KEY = 'greek.words.v1';
 const SETTINGS_KEY = 'greek.settings.v1';
 const OPTIONS_KEY = 'greek.options.v1';
+const PROGRESS_KEY = 'greek.progress.v1';
 
 function read<T>(key: string): T | null {
   try {
@@ -27,6 +28,23 @@ export function loadWords(): Word[] {
 
 export function saveWords(words: Word[]): void {
   write(WORDS_KEY, words);
+}
+
+/** Per-device "Know it / Don't know" progress for shared (cloud) words: id → box. */
+export function loadProgress(): Record<string, number> {
+  return read<Record<string, number>>(PROGRESS_KEY) ?? {};
+}
+
+export function saveProgress(progress: Record<string, number>): void {
+  write(PROGRESS_KEY, progress);
+}
+
+export function clearLocalWords(): void {
+  try {
+    localStorage.removeItem(WORDS_KEY);
+  } catch {
+    // Ignore: storage unavailable.
+  }
 }
 
 export function loadSettings(): Settings {

@@ -13,6 +13,9 @@ function toggle<T>(arr: T[], value: T): T[] {
 
 export function HomeScreen({
   words,
+  loading,
+  syncError,
+  canEdit,
   options,
   onChangeOptions,
   onStart,
@@ -21,6 +24,9 @@ export function HomeScreen({
   onSettings,
 }: {
   words: Word[];
+  loading: boolean;
+  syncError: string | null;
+  canEdit: boolean;
   options: StudyOptions;
   onChangeOptions: (o: StudyOptions) => void;
   onStart: () => void;
@@ -42,11 +48,17 @@ export function HomeScreen({
       <div className="brand">Ἑλληνικά</div>
       <p className="muted">Greek Flashcards · {words.length} {words.length === 1 ? 'word' : 'words'}</p>
 
-      {words.length === 0 ? (
+      {syncError && <div className="error">Couldn't load words: {syncError}</div>}
+
+      {loading ? (
+        <div className="loading">
+          <span className="spinner" /> Loading words...
+        </div>
+      ) : words.length === 0 ? (
         <div className="card empty">
           No words yet.
           <br />
-          Add a photo of a vocabulary list to get started!
+          {canEdit ? 'Add a photo of a vocabulary list to get started!' : 'Check back soon!'}
         </div>
       ) : (
         <>
@@ -97,12 +109,16 @@ export function HomeScreen({
       )}
 
       <div className="stack mt-lg">
-        <button className={`btn ${words.length ? 'secondary' : 'primary'}`} onClick={onImport}>
-          📷 Add Words from Photo
-        </button>
-        <button className="btn secondary" onClick={onManage}>
-          📚 Manage Words
-        </button>
+        {canEdit && (
+          <>
+            <button className={`btn ${words.length ? 'secondary' : 'primary'}`} onClick={onImport}>
+              📷 Add Words from Photo
+            </button>
+            <button className="btn secondary" onClick={onManage}>
+              📚 Manage Words
+            </button>
+          </>
+        )}
         <button className="btn secondary" onClick={onSettings}>
           ⚙️ Settings
         </button>

@@ -5,4 +5,6 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: './',
   plugins: [react()],
+  // Firebase is ~250 kB gzipped; the service worker caches it after the first visit.
+  build: { chunkSizeWarningLimit: 1200 },
 });

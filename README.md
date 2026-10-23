@@ -11,10 +11,29 @@
 - **골라서 공부하기**: 리스트별, 품사별로 고를 수 있고 둘을 같이 써도 돼요 (예: List 2의 동사만).
 - **옵션**: 영어 → 그리스어 반대 모드, 섞기 (모르는 단어 먼저).
 - **단어 관리**: 검색, 직접 추가/수정/삭제, 리스트 통째로 삭제.
-- **백업**: JSON 파일로 내보내기 / 불러오기.
+- **백업**: JSON 파일로 내보내기 / 불러오기 (관리자).
 - 오프라인에서도 공부할 수 있어요 (사진 읽기만 인터넷이 필요해요).
 
-단어랑 설정은 폰 브라우저 안(localStorage)에 저장돼요.
+## 관리자 모드 (Firebase)
+
+Firebase를 연결하면 단어장이 클라우드에 **하나만** 저장되고 모두가 그걸 봐요.
+
+- **관리자(admin)**: ⚙️ Settings → Admin에서 로그인하면 *Add Words from Photo*, *Manage Words*가 보여요. 추가/수정/삭제하면 모든 사람 앱에 바로 반영돼요.
+- **다른 사람들**: 로그인 없이 열자마자 공부만 할 수 있어요. 수정 버튼은 안 보여요.
+- *Know it / Don't know* 학습 기록은 사람마다 자기 기기에 따로 저장돼요.
+- 인터넷이 없어도 마지막으로 받은 단어로 공부할 수 있어요.
+- 보안은 `firestore.rules`가 맡아요: 누구나 읽을 수 있고, 관리자 UID만 쓸 수 있어요.
+
+`src/firebaseConfig.ts`의 `projectId`가 비어 있으면 Firebase 없이 **로컬 모드**로 돌아가요 (단어가 그 기기 안에만 저장돼요).
+
+### Firebase 설정 순서
+
+1. https://console.firebase.google.com → **프로젝트 추가**
+2. **Authentication** → 시작하기 → Sign-in method에서 **이메일/비밀번호** 사용 설정
+3. Authentication → **Users** → 사용자 추가 (관리자 이메일 + 비밀번호) → 생긴 **User UID** 복사
+4. (권장) Authentication → Settings → 사용자 작업에서 **가입(생성) 허용** 끄기
+5. **Firestore Database** → 데이터베이스 만들기 (프로덕션 모드) → **규칙** 탭에 `firestore.rules` 내용 붙여넣고 `ADMIN_UID_HERE`를 3번의 UID로 바꾼 다음 게시
+6. 프로젝트 설정 → 내 앱 → 웹(`</>`) 앱 등록 → `firebaseConfig` 값을 `src/firebaseConfig.ts`에 붙여넣고, `ADMIN_UID`에도 3번의 UID를 넣기
 
 ## Gemini API 키
 
